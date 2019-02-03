@@ -5,4 +5,4 @@
  * @author antoniojose
  *
  */
-package br.com.curstomc.domain;
+package br.com.cursomc.repositories;

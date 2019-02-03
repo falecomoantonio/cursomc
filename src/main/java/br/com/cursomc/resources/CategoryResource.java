@@ -1,52 +1,62 @@
 package br.com.cursomc.resources;
 
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import br.com.curstomc.domain.Category;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import br.com.cursomc.domain.Category;
+import br.com.cursomc.services.CategoryService;
 
 
 @RestController
+@RequestMapping(value="categories")
 public class CategoryResource {
 	
-
-	@RequestMapping(value="/categories/list",method=RequestMethod.GET)
-	public List<Category> list() {
-		
-		List<Category> list = new ArrayList<>();
-		
-		list.add(new Category(1,"Categoria 1","categoria_1"));
-		list.add(new Category(2,"Categoria 2","categoria_2"));
-		list.add(new Category(3,"Categoria 3","categoria_3"));
-		list.add(new Category(4,"Categoria 4","categoria_4"));
-		list.add(new Category(5,"Categoria 5","categoria_5"));
-		list.add(new Category(6,"Categoria 6","categoria_6"));
-		list.add(new Category(7,"Categoria 7","categoria_7"));
-		list.add(new Category(8,"Categoria 8","categoria_8"));
-		list.add(new Category(9,"Categoria 9","categoria_9"));
-		 
-		return list;
-	}
+	@Autowired
+	private CategoryService service;
 	
-	@RequestMapping(value="/categories/{id}", method=RequestMethod.GET)
-	public Category show( @PathVariable(value = "id") Integer id ) {
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<Category>> list() {
+		List<Category> lst = this.service.list();	
 		
-		if( id == null ) {
-			return null;
+		if(lst.isEmpty()) {
+			return ResponseEntity.notFound().build();
 		}
 		
-		String name = String.format("Categoria %d", id);
-		String slug = String.format("categoria_%d", id);
-		
-		Category cat = new Category(id, name, slug);
+		return ResponseEntity.ok(lst);
+	}
 	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public ResponseEntity<?> show( @PathVariable(value = "id") Integer id ) {
+				
+		Category cat = this.service.searchById(id);	
+	
+		if(cat == null) {
+			return ResponseEntity.notFound().build();
+		}
 		
-		return cat;
+		return ResponseEntity.ok( cat );
+	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<?> store( @RequestBody Category entity ) {
+		entity = this.service.save(entity);		
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+				  .path("/{id}")
+				  .buildAndExpand(entity.getId())
+				  .toUri();
+		return ResponseEntity.created(location).build();
 	}
 
 }

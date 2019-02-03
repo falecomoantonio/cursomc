@@ -1,4 +1,4 @@
-package br.com.curstomc.domain;
+package br.com.cursomc.domain;
 
 import java.io.Serializable;
 
@@ -19,11 +19,10 @@ public class Category implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name="name", length=64, nullable=false)
+	@Column(length=64, nullable=false)
 	private String name;
 	
-
-	@Column(name="slug", length=64, nullable=false, unique=true)
+	@Column(length=64, nullable=false, unique=true)
 	private String slug;
 
 
