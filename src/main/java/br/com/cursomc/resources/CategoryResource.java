@@ -2,7 +2,6 @@ package br.com.cursomc.resources;
 
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +58,17 @@ public class CategoryResource {
 		return ResponseEntity.created(location).build();
 	}
 
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update( @RequestBody Category entity, @PathVariable(value = "id") Integer id) {
+		entity.setId(id);
+		this.service.update(entity);
+		return ResponseEntity.noContent().build();
+	}
+	
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete( @PathVariable(value = "id") Integer id) {
+		this.service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 }

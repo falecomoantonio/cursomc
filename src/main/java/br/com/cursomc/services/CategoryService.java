@@ -25,6 +25,14 @@ public class CategoryService {
 		return object.orElse(new Category());
 	}
 	
+	public void delete(final Integer id){
+		this.repository.deleteById(id);
+	}
+
+	
+	public Category update( Category object) {
+		return this.repository.save(object);
+	}
 	
 	public Category save( Category object ) {
 		object.setId(null);
