@@ -1,7 +1,9 @@
 package br.com.cursomc.resources;
 
+
 import java.net.URI;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,40 +13,47 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import br.com.cursomc.domain.Offer;
-import br.com.cursomc.services.OfferService;
+import br.com.cursomc.domain.City;
+import br.com.cursomc.services.CityService;
+
 
 @RestController
-@RequestMapping(value="offers")
-public class OfferResource {
-
+@RequestMapping(value="cities")
+public class CityResource {
+	
 	@Autowired
-	private OfferService service;
-
+	private CityService service;
+	
+	
 	@RequestMapping(method=RequestMethod.GET)
-	public ResponseEntity<List<Offer>> list() {
-		List<Offer> list = this.service.list();
-		return ResponseEntity.ok(list);
+	public ResponseEntity<List<City>> list() {
+		List<City> lst = this.service.list();	
+		
+		if(lst.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(lst);
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<Offer> show( @PathVariable("id") Integer id){
-		Offer offer = this.service.findById(id);
-		return ResponseEntity.ok( offer );
+	public ResponseEntity<?> show( @PathVariable(value = "id") Integer id ) throws Exception {
+		City cat = this.service.searchById(id);	
+		return ResponseEntity.ok( cat );
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<?> store( @RequestBody Offer offer) {
-		offer = this.service.save(offer);
+	public ResponseEntity<?> store( @RequestBody City entity ) {
+		entity = this.service.save(entity);		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 				  .path("/{id}")
-				  .buildAndExpand(offer.getId())
+				  .buildAndExpand(entity.getId())
 				  .toUri();
 		return ResponseEntity.created(location).build();
 	}
-	
+
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update( @RequestBody Offer entity, @PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> update( @RequestBody City entity, @PathVariable(value = "id") Integer id) {
 		entity.setId(id);
 		this.service.update(entity);
 		return ResponseEntity.noContent().build();
@@ -56,7 +65,4 @@ public class OfferResource {
 		this.service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	
-	
 }

@@ -37,14 +37,8 @@ public class CategoryResource {
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> show( @PathVariable(value = "id") Integer id ) {
-				
+	public ResponseEntity<?> show( @PathVariable(value = "id") Integer id ) throws Exception {
 		Category cat = this.service.searchById(id);	
-	
-		if(cat == null) {
-			return ResponseEntity.notFound().build();
-		}
-		
 		return ResponseEntity.ok( cat );
 	}
 	

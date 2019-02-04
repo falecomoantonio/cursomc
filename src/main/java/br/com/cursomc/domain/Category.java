@@ -10,12 +10,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="categories")
@@ -33,6 +31,7 @@ public class Category implements Serializable {
 	@Column(length=64, nullable=false, unique=true)
 	private String slug;
 	
+	@JsonManagedReference
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
 	private List<Offer> offers;
 

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.cursomc.domain.Category;
+import br.com.cursomc.exceptions.ObjectNotFoundException;
+import br.com.cursomc.exceptions.UnprocessableEntityException;
 import br.com.cursomc.repositories.CategoryRepository;
 
 @Service
@@ -20,9 +22,17 @@ public class CategoryService {
 		return objects;
 	}
 	
-	public Category searchById( Integer id ) {
+	/**
+	public Category searchByField( final String field, final String value ) throws Exception {
+		this.repository.findByField(field,value);
+		
+		return null;
+	}
+	**/
+	
+	public Category searchById( Integer id ) throws Exception {
 		Optional<Category> object = this.repository.findById(id);
-		return object.orElse(new Category());
+		return object.orElseThrow(() -> new ObjectNotFoundException("Categoria Não Encontrada"));
 	}
 	
 	public void delete(final Integer id){
@@ -30,13 +40,22 @@ public class CategoryService {
 	}
 
 	
-	public Category update( Category object) {
-		return this.repository.save(object);
+	public Category update( Category entity) {
+		entity = this.repository.save(entity);
+		if(entity == null) {
+			throw new UnprocessableEntityException("Não Foi Possível Atualizar a Categoria");
+		}
+		return entity;
 	}
+		
 	
 	public Category save( Category object ) {
 		object.setId(null);
-		return this.repository.save(object);
+		object = this.repository.save(object);
+		if(object==null) {
+			throw new UnprocessableEntityException("Não foi possível registrar a categoria");
+		}
+		return object;
 	}
 
 }
