@@ -1,12 +1,20 @@
 package br.com.cursomc.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,6 +32,9 @@ public class Category implements Serializable {
 	
 	@Column(length=64, nullable=false, unique=true)
 	private String slug;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
+	private List<Offer> offers;
 
 
 	public Category(final Integer id, final String name, final String slug) {
@@ -31,6 +42,7 @@ public class Category implements Serializable {
 		this.id = id;
 		this.name = name;
 		this.slug = slug;
+		this.offers = new ArrayList<Offer>();
 	}
 	
 	public Category( final String name, final String slug) {
@@ -38,6 +50,7 @@ public class Category implements Serializable {
 		this.id = null;
 		this.name = name;
 		this.slug = slug;
+		this.offers = new ArrayList<Offer>();
 	}
 
 
@@ -46,6 +59,7 @@ public class Category implements Serializable {
 		this.id = null;
 		this.name = null;
 		this.slug = null;
+		this.offers = new ArrayList<Offer>();
 	}
 
 	@Override
@@ -115,5 +129,19 @@ public class Category implements Serializable {
 	public void setSlug(String slug) {
 		this.slug = slug;
 	}
+
+	public List<Offer> getOffers() {
+		return offers;
+	}
+
+	public void setOffers(List<Offer> offers) {
+		this.offers = offers;
+	}
+	
+	public void setOffer(Offer offer) {
+		this.offers.add(offer);
+	}
+	
+	
 	
 }

@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,13 +29,19 @@ public class Offer implements Serializable {
 	private String content;
 	
 	@Column(nullable=false)
-	private Double price;	
+	private Double price;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id", nullable = false)
+	private Category category;
 	
 	public Offer() {
 		this.id = null;
 		this.title = null;
 		this.content = null;
 		this.price = null;
+		this.category = null;
+
 	}
 	
 	public Offer(Integer id, String title, String content, Double price) {
@@ -41,6 +50,7 @@ public class Offer implements Serializable {
 		this.title = title;
 		this.content = content;
 		this.price = price;
+		this.category = null;
 	}
 
 	public Integer getId() {
@@ -65,6 +75,23 @@ public class Offer implements Serializable {
 
 	public void setPrice(Double price) {
 		this.price = price;
+	}
+ 
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	@Override
